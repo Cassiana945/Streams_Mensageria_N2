@@ -45,24 +45,11 @@ public class Consumer {
     }
 
     private static void processMessage(String message) {
-
         String[] messageParts = message.split("\\|");
+        String action = messageParts[0];
 
-        // Condição para garantir que haja ao menos 2 partes na mensagem (ação e o primeiro parâmetro)
-        if (messageParts.length < 2) {
-            System.err.println("Mensagem mal formatada: " + message);
-            return;
-        }
 
-        String action = messageParts[0];  // Ação: CREATE, UPDATE, DELETE
-
-        // Agora, vamos verificar as diferentes ações:
         if ("CREATE".equals(action)) {
-            if (messageParts.length < 3) {
-                System.err.println("Mensagem CREATE mal formatada: " + message);
-                return;
-            }
-
             String cidade = messageParts[1];
             String alerta = messageParts[2];
             MessageDAO messageDAO = new MessageDAO();
@@ -73,16 +60,12 @@ public class Consumer {
                 msg.setAlerta(alerta);
                 messageDAO.create(msg);
                 System.out.println("Alerta inserido no banco de dados.");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         } else if ("UPDATE".equals(action)) {
-            if (messageParts.length < 4) {
-                System.err.println("Mensagem UPDATE mal formatada: " + message);
-                return;
-            }
-
             String cidade = messageParts[1];
             String alerta = messageParts[2];
             Long id = Long.parseLong(messageParts[3]);
@@ -95,16 +78,12 @@ public class Consumer {
                 msg.setAlerta(alerta);
                 messageDAO.update(msg);
                 System.out.println("Alerta atualizado no banco de dados.");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         } else if ("DELETE".equals(action)) {
-            if (messageParts.length < 2) {
-                System.err.println("Mensagem DELETE mal formatada: " + message);
-                return;
-            }
-
             Long id = Long.parseLong(messageParts[1]);
             MessageDAO messageDAO = new MessageDAO();
 
